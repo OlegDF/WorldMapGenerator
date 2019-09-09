@@ -1,13 +1,13 @@
 package com.worldmapgenerator;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.worldmapgenerator.Model.QuadraticEquation;
+import com.worldmapgenerator.Model.LogicModel;
 
 public class main extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		System.out.println(new QuadraticEquation(1, 2, -9).getLesserRoot() + " " + new QuadraticEquation(1, 2, -9).getGreaterRoot());
+		LogicModel model = new LogicModel();
 	}
 
 	@Override

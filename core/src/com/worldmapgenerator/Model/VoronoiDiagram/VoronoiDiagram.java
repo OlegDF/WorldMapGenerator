@@ -1,10 +1,10 @@
-package com.worldmapgenerator.Model;
+package com.worldmapgenerator.Model.VoronoiDiagram;
+
+import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
+import com.worldmapgenerator.Model.QuadraticEquation;
 
 import java.awt.*;
 import java.util.*;
-
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Vector2;
 
 public class VoronoiDiagram {
 
@@ -33,7 +33,8 @@ public class VoronoiDiagram {
     }
 
     /**
-     * Создает диаграмму с произвольными крайними точками
+     * Создает диаграмму с произвольными крайними точками и заданным зерном (т. е. при одном и том же seed
+     * генерируются одинаковые диаграммы)
      */
     static VoronoiDiagram seededDiagram(int numberOfPoints, float borderLeft, float borderBottom,
                                                float borderRight, float borderTop, long seed) {
@@ -43,9 +44,16 @@ public class VoronoiDiagram {
     /**
      * Создает диаграмму с левым нижним углом в (0, 0)
      */
-    static VoronoiDiagram newDiagramStartingAt00(int numberOfPoints, float borderRight, float borderTop) {
+    static VoronoiDiagram randomDiagramStartingAt00(int numberOfPoints, float borderRight, float borderTop) {
         return new VoronoiDiagram(numberOfPoints, 0, 0, borderRight, borderTop,
                 (long)(Math.random() * Integer.MAX_VALUE));
+    }
+
+    /**
+     * Создает диаграмму с левым нижним углом в (0, 0)
+     */
+    static VoronoiDiagram seededDiagramStartingAt00(int numberOfPoints, float borderRight, float borderTop, long seed) {
+        return new VoronoiDiagram(numberOfPoints, 0, 0, borderRight, borderTop, seed);
     }
 
     /**
@@ -78,9 +86,29 @@ public class VoronoiDiagram {
     private void generatePolygons() {
         float sweepLine = 0;
         TreeSet<Arc> beachLine = new TreeSet<>();
-
+        PriorityQueue<Event> eventsQueue = new PriorityQueue<>();
+        for(DiagramPoint point: points) {
+            eventsQueue.add(new EventNewPoint(point));
+        }
+        while(!eventsQueue.isEmpty()) {
+            Event currentEvent = eventsQueue.poll();
+            sweepLine = currentEvent.newSweepLine;
+            switch (currentEvent.type) {
+                case NEW_POINT:
+                    EventNewPoint currentNewPointEvent = (EventNewPoint)currentEvent;
+                    Arc newArc = new Arc(currentNewPointEvent.causingPoint, currentNewPointEvent.causingPoint.getX(), currentNewPointEvent.causingPoint.getX());
+                    Arc interruptedArc = beachLine.lower(newArc);
+                    beachLine.remove(interruptedArc);
+                    break;
+            }
+        }
+        Polygon poly = new Polygon();
     }
 
+    /**
+     * Дуга - составляющая границы существующей части диаграммы.
+     * Имеет форму параболы с фокусом в одной из точек
+     */
     private class Arc implements Comparable<Arc> {
 
         private final DiagramPoint focus;
@@ -116,18 +144,71 @@ public class VoronoiDiagram {
 
         @Override
         public int compareTo(Arc o) {
-            return this.focus.compareTo(o.focus);
+            return Float.compare(this.leftBorder, o.leftBorder);
         }
     }
 
     /**
-     * NEW_POINT = очередная точка переходит в
+     * NEW_POINT = очередная точка переходит за направляющую
+     * NEW_CORNER = дуга схлопывается в 0 и ее соседние дуги встречаются, образуя новый угол в диаграмме
      */
-    private enum eventType{
+    private enum EventType {
         NEW_POINT, NEW_CORNER
     }
 
-    private class Event {
+    private abstract class Event implements Comparable<Event> {
+
+        EventType type;
+        float newSweepLine;
+
+        Event() {
+            this.type = EventType.NEW_POINT;
+            this.newSweepLine = Float.MAX_VALUE;
+        }
+
+        abstract void resolveEvent();
+
+        @Override
+        public int compareTo(Event o) {
+            return Float.compare(newSweepLine, o.newSweepLine);
+        }
+
+    }
+
+    private class EventNewPoint extends Event {
+
+        private final DiagramPoint causingPoint;
+
+        EventNewPoint(DiagramPoint causingPoint) {
+            super();
+            this.causingPoint = causingPoint;
+            this.type = EventType.NEW_POINT;
+            this.newSweepLine = causingPoint.getY();
+        }
+
+        @Override
+        void resolveEvent() {
+        }
+
+    }
+
+    private class EventNewCorner extends Event {
+
+        private final Arc leftArc, midArc, rightArc;
+
+        EventNewCorner(Arc leftArc, Arc midArc, Arc rightArc, float newSweepLine) {
+            super();
+            this.type = EventType.NEW_CORNER;
+            this.leftArc = leftArc;
+            this.midArc = midArc;
+            this.rightArc = rightArc;
+            this.newSweepLine = newSweepLine;
+        }
+
+        @Override
+        void resolveEvent() {
+        }
+
     }
 
 }
