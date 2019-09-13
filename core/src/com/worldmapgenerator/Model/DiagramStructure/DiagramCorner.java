@@ -6,13 +6,13 @@ import java.util.List;
 
 public class DiagramCorner {
 
-    private final float x, y;
+    private final double x, y;
 
     private final ArrayList<DiagramCorner> neighbourCorners;
     private final ArrayList<DiagramPoint> neighbourPoints;
     private final ArrayList<DiagramEdge> neighbourEdges;
 
-    public DiagramCorner(float x, float y) {
+    public DiagramCorner(double x, double y) {
         this.x = x;
         this.y = y;
         neighbourCorners = new ArrayList<>();
@@ -45,11 +45,11 @@ public class DiagramCorner {
         return Collections.unmodifiableList(neighbourEdges);
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 

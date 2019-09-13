@@ -2,10 +2,10 @@ package com.worldmapgenerator.Model;
 
 public class QuadraticEquation {
 
-    private final float a, b, c;
-    private Float lesserRoot, greaterRoot;
+    private final double a, b, c;
+    private Double lesserRoot, greaterRoot;
 
-    public QuadraticEquation(float a, float b, float c) {
+    public QuadraticEquation(double a, double b, double c) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -13,7 +13,7 @@ public class QuadraticEquation {
     }
 
     private void solve() {
-        float d = b * b - 4 * a * c;
+        double d = b * b - 4 * a * c;
         if(d < 0) {
             lesserRoot = greaterRoot = null;
         } else if(d == 0) {
@@ -22,18 +22,18 @@ public class QuadraticEquation {
             lesserRoot = (-b - (float) Math.sqrt(d)) / (2 * a);
             greaterRoot = (-b + (float) Math.sqrt(d)) / (2 * a);
             if(lesserRoot > greaterRoot) {
-                float swap = lesserRoot;
+                double swap = lesserRoot;
                 lesserRoot = greaterRoot;
                 greaterRoot = swap;
             }
         }
     }
 
-    public Float getLesserRoot() {
+    public Double getLesserRoot() {
         return lesserRoot;
     }
 
-    public Float getGreaterRoot() {
+    public Double getGreaterRoot() {
         return greaterRoot;
     }
 }

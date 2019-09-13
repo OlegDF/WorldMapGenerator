@@ -29,13 +29,17 @@ class Triangle {
         return new TriangleEdge(p3, p1);
     }
 
+    boolean isPointVertex(DiagramPoint checkedPoint) {
+        return checkedPoint.equals(p1) || checkedPoint.equals(p2) || checkedPoint.equals(p3);
+    }
+
     boolean isPointInCircumcircle(DiagramPoint checkedPoint) {
-        float x1 = p1.getX() - checkedPoint.getX();
-        float y1 = p1.getY() - checkedPoint.getY();
-        float x2 = p2.getX() - checkedPoint.getX();
-        float y2 = p2.getY() - checkedPoint.getY();
-        float x3 = p3.getX() - checkedPoint.getX();
-        float y3 = p3.getY() - checkedPoint.getY();
+        double x1 = p1.getX() - checkedPoint.getX();
+        double y1 = p1.getY() - checkedPoint.getY();
+        double x2 = p2.getX() - checkedPoint.getX();
+        double y2 = p2.getY() - checkedPoint.getY();
+        double x3 = p3.getX() - checkedPoint.getX();
+        double y3 = p3.getY() - checkedPoint.getY();
         return  (x1 * x1 + y1 * y1) * (x2 * y3 - x3 * y2) -
                 (x2 * x2 + y2 * y2) * (x1 * y3 - x3 * y1) +
                 (x3 * x3 + y3 * y3) * (x1 * y2 - x2 * y1)

@@ -9,25 +9,43 @@ public class DelaunayTriangulation {
     private final ArrayList<DiagramPoint> points;
     private final ArrayList<Triangle> triangles;
 
-    private final float borderLeft, borderRight, borderBottom, borderTop;
+    private final double borderLeft, borderRight, borderBottom, borderTop;
     private final int numberOfPoints;
 
-    private DelaunayTriangulation(int numberOfPoints, float borderLeft, float borderBottom, float borderRight,
-                           float borderTop, long seed) {
+    private DiagramPoint supertrianglePoint1, supertrianglePoint2, supertrianglePoint3;
+
+    private boolean checkingEnabled = false;
+
+    private DelaunayTriangulation(int numberOfPoints, double borderLeft, double borderBottom, double borderRight,
+                                  double borderTop, long seed) {
         this.numberOfPoints = numberOfPoints;
+        if(borderRight < borderLeft) {
+            double swap = borderRight;
+            borderRight = borderLeft;
+            borderLeft = swap;
+        }
+        if(borderTop < borderBottom) {
+            double swap = borderTop;
+            borderTop = borderBottom;
+            borderBottom = swap;
+        }
         this.borderLeft = borderLeft;
         this.borderBottom = borderBottom;
         this.borderRight = borderRight;
         this.borderTop = borderTop;
         points = generatePoints(seed);
         triangles = generateTriangles();
+        constructDiagram();
+        if(checkingEnabled) {
+            check();
+        }
     }
 
     /**
      * Создает диаграмму с произвольными крайними точками
      */
-    public static DelaunayTriangulation randomTriangulation(int numberOfPoints, float borderLeft, float borderBottom,
-                                        float borderRight, float borderTop) {
+    public static DelaunayTriangulation randomTriangulation(int numberOfPoints, double borderLeft, double borderBottom,
+                                                            double borderRight, double borderTop) {
         return new DelaunayTriangulation(numberOfPoints, borderLeft, borderBottom, borderRight, borderTop,
                 (long)(Math.random() * Integer.MAX_VALUE));
     }
@@ -36,15 +54,15 @@ public class DelaunayTriangulation {
      * Создает диаграмму с произвольными крайними точками и заданным зерном (т. е. при одном и том же seed
      * генерируются одинаковые диаграммы)
      */
-    public static DelaunayTriangulation seededTriangulation(int numberOfPoints, float borderLeft, float borderBottom,
-                                        float borderRight, float borderTop, long seed) {
+    public static DelaunayTriangulation seededTriangulation(int numberOfPoints, double borderLeft, double borderBottom,
+                                                            double borderRight, double borderTop, long seed) {
         return new DelaunayTriangulation(numberOfPoints, borderLeft, borderBottom, borderRight, borderTop, seed);
     }
 
     /**
      * Создает диаграмму с левым нижним углом в (0, 0)
      */
-    public static DelaunayTriangulation randomTriangulationStartingAt00(int numberOfPoints, float borderRight, float borderTop) {
+    public static DelaunayTriangulation randomTriangulationStartingAt00(int numberOfPoints, double borderRight, double borderTop) {
         return new DelaunayTriangulation(numberOfPoints, 0, 0, borderRight, borderTop,
                 (long)(Math.random() * Integer.MAX_VALUE));
     }
@@ -52,7 +70,7 @@ public class DelaunayTriangulation {
     /**
      * Создает диаграмму с левым нижним углом в (0, 0)
      */
-    public static DelaunayTriangulation seededTriangulationStartingAt00(int numberOfPoints, float borderRight, float borderTop, long seed) {
+    public static DelaunayTriangulation seededTriangulationStartingAt00(int numberOfPoints, double borderRight, double borderTop, long seed) {
         return new DelaunayTriangulation(numberOfPoints, 0, 0, borderRight, borderTop, seed);
     }
 
@@ -66,17 +84,17 @@ public class DelaunayTriangulation {
         ArrayList<DiagramPoint> newPoints = new ArrayList<>();
         Random random = new Random(seed);
         for(int i = 0; i < numberOfPoints; i++) {
-            float newX = borderLeft + random.nextFloat() * (borderRight - borderLeft);
-            float newY = borderBottom + random.nextFloat() * (borderTop - borderBottom);
+            double newX = borderLeft + random.nextDouble() * (borderRight - borderLeft);
+            double newY = borderBottom + random.nextDouble() * (borderTop - borderBottom);
             newPoints.add(new DiagramPoint(newX, newY));
         }
         Collections.sort(newPoints, new Comparator<DiagramPoint>() {
             @Override
             public int compare(DiagramPoint o1, DiagramPoint o2) {
                 if(o1.getY() == o2.getY()) {
-                    return Float.compare(o1.getX(), o2.getX());
+                    return Double.compare(o1.getX(), o2.getX());
                 } else {
-                    return Float.compare(o1.getY(), o2.getY());
+                    return Double.compare(o1.getY(), o2.getY());
                 }
             }
         });
@@ -90,14 +108,17 @@ public class DelaunayTriangulation {
      */
     private ArrayList<Triangle> generateTriangles() {
         ArrayList<Triangle> triangles = new ArrayList<>();
-        triangles.add(new Triangle(
-                new DiagramPoint(borderLeft - (borderRight - borderLeft), borderBottom - (borderTop - borderBottom)),
-                new DiagramPoint(borderLeft + (borderRight - borderLeft) / 2 , borderBottom - (borderTop - borderBottom) * 3),
-                new DiagramPoint(borderLeft - (borderRight - borderLeft), borderBottom + (borderTop - borderBottom) * 2)
-        ));
+        supertrianglePoint1 = new DiagramPoint(borderLeft - (borderRight - borderLeft),
+                borderBottom - (borderTop - borderBottom));
+        supertrianglePoint2 = new DiagramPoint(borderLeft + (borderRight - borderLeft) / 2 ,
+                borderTop + (borderTop - borderBottom) * 2);
+        supertrianglePoint3 = new DiagramPoint(borderLeft + (borderRight - borderLeft) * 2,
+                borderBottom - (borderTop - borderBottom));
+        triangles.add(new Triangle(supertrianglePoint1, supertrianglePoint2, supertrianglePoint3));
         for(DiagramPoint point: points) {
             addPointToTriangulation(triangles, point);
         }
+        cleanUpSupertriangle(triangles);
         return triangles;
     }
 
@@ -130,6 +151,46 @@ public class DelaunayTriangulation {
             }
         }
         edgesToConnect.add(edgeToAdd);
+    }
+
+    private void cleanUpSupertriangle(ArrayList<Triangle> triangles) {
+        for(Iterator<Triangle> triangleIterator = triangles.iterator(); triangleIterator.hasNext(); ) {
+            Triangle triangle = triangleIterator.next();
+            if(triangle.isPointVertex(supertrianglePoint1) ||
+                    triangle.isPointVertex(supertrianglePoint2) ||
+                    triangle.isPointVertex(supertrianglePoint3)) {
+                triangleIterator.remove();
+            }
+        }
+    }
+
+    private void constructDiagram() {
+        for(Triangle triangle: triangles) {
+            triangle.e12().connectPoints();
+            triangle.e23().connectPoints();
+            triangle.e31().connectPoints();
+        }
+    }
+
+    public ArrayList<DiagramPoint> getPoints() {
+        return points;
+    }
+
+    private void check() {
+        for(Triangle triangle: triangles) {
+            for(DiagramPoint point: points) {
+                if(!triangle.isPointVertex(point) &&
+                        triangle.isPointInCircumcircle(point)) {
+                    System.out.println("Point " + (int)(point.getX() * 1000) + ";" + (int)(point.getY() * 1000) + " is in the circumcircle of triangle " +
+                            (int)(triangle.e12().p1.getX() * 1000) + ";" + (int)(triangle.e12().p1.getY() * 1000) + " " +
+                            (int)(triangle.e12().p2.getX() * 1000) + ";" + (int)(triangle.e12().p2.getY() * 1000) + " " +
+                            (int)(triangle.e23().p1.getX() * 1000) + ";" + (int)(triangle.e23().p1.getY() * 1000) + " " +
+                            (int)(triangle.e23().p2.getX() * 1000) + ";" + (int)(triangle.e23().p2.getY() * 1000) + " " +
+                            (int)(triangle.e31().p1.getX() * 1000) + ";" + (int)(triangle.e31().p1.getY() * 1000) + " " +
+                            (int)(triangle.e31().p2.getX() * 1000) + ";" + (int)(triangle.e31().p2.getY() * 1000));
+                }
+            }
+        }
     }
 
 }

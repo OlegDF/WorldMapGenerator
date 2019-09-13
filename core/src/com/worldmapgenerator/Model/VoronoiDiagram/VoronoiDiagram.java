@@ -10,11 +10,11 @@ public class VoronoiDiagram {
 
     private final ArrayList<DiagramPoint> points;
 
-    private final float borderLeft, borderRight, borderBottom, borderTop;
+    private final double borderLeft, borderRight, borderBottom, borderTop;
     private final int numberOfPoints;
 
-    private VoronoiDiagram(int numberOfPoints, float borderLeft, float borderBottom, float borderRight,
-                           float borderTop, long seed) {
+    private VoronoiDiagram(int numberOfPoints, double borderLeft, double borderBottom, double borderRight,
+                           double borderTop, long seed) {
         this.numberOfPoints = numberOfPoints;
         this.borderLeft = borderLeft;
         this.borderBottom = borderBottom;
@@ -26,8 +26,8 @@ public class VoronoiDiagram {
     /**
      * Создает диаграмму с произвольными крайними точками
      */
-    static VoronoiDiagram randomDiagram(int numberOfPoints, float borderLeft, float borderBottom,
-                                               float borderRight, float borderTop) {
+    static VoronoiDiagram randomDiagram(int numberOfPoints, double borderLeft, double borderBottom,
+                                        double borderRight, double borderTop) {
         return new VoronoiDiagram(numberOfPoints, borderLeft, borderBottom, borderRight, borderTop,
                 (long)(Math.random() * Integer.MAX_VALUE));
     }
@@ -36,15 +36,15 @@ public class VoronoiDiagram {
      * Создает диаграмму с произвольными крайними точками и заданным зерном (т. е. при одном и том же seed
      * генерируются одинаковые диаграммы)
      */
-    static VoronoiDiagram seededDiagram(int numberOfPoints, float borderLeft, float borderBottom,
-                                               float borderRight, float borderTop, long seed) {
+    static VoronoiDiagram seededDiagram(int numberOfPoints, double borderLeft, double borderBottom,
+                                        double borderRight, double borderTop, long seed) {
         return new VoronoiDiagram(numberOfPoints, borderLeft, borderBottom, borderRight, borderTop, seed);
     }
 
     /**
      * Создает диаграмму с левым нижним углом в (0, 0)
      */
-    static VoronoiDiagram randomDiagramStartingAt00(int numberOfPoints, float borderRight, float borderTop) {
+    static VoronoiDiagram randomDiagramStartingAt00(int numberOfPoints, double borderRight, double borderTop) {
         return new VoronoiDiagram(numberOfPoints, 0, 0, borderRight, borderTop,
                 (long)(Math.random() * Integer.MAX_VALUE));
     }
@@ -52,7 +52,7 @@ public class VoronoiDiagram {
     /**
      * Создает диаграмму с левым нижним углом в (0, 0)
      */
-    static VoronoiDiagram seededDiagramStartingAt00(int numberOfPoints, float borderRight, float borderTop, long seed) {
+    static VoronoiDiagram seededDiagramStartingAt00(int numberOfPoints, double borderRight, double borderTop, long seed) {
         return new VoronoiDiagram(numberOfPoints, 0, 0, borderRight, borderTop, seed);
     }
 
@@ -66,17 +66,17 @@ public class VoronoiDiagram {
         ArrayList<DiagramPoint> newPoints = new ArrayList<>();
         Random random = new Random(seed);
         for(int i = 0; i < numberOfPoints; i++) {
-            float newX = borderLeft + random.nextFloat() * (borderRight - borderLeft);
-            float newY = borderBottom + random.nextFloat() * (borderTop - borderBottom);
+            double newX = borderLeft + random.nextDouble() * (borderRight - borderLeft);
+            double newY = borderBottom + random.nextDouble() * (borderTop - borderBottom);
             newPoints.add(new DiagramPoint(newX, newY));
         }
         Collections.sort(newPoints, new Comparator<DiagramPoint>() {
             @Override
             public int compare(DiagramPoint o1, DiagramPoint o2) {
                 if(o1.getY() == o2.getY()) {
-                    return Float.compare(o1.getX(), o2.getX());
+                    return Double.compare(o1.getX(), o2.getX());
                 } else {
-                    return Float.compare(o1.getY(), o2.getY());
+                    return Double.compare(o1.getY(), o2.getY());
                 }
             }
         });
@@ -84,7 +84,7 @@ public class VoronoiDiagram {
     }
 
     private void generatePolygons() {
-        float sweepLine = 0;
+        double sweepLine = 0;
         TreeSet<Arc> beachLine = new TreeSet<>();
         PriorityQueue<Event> eventsQueue = new PriorityQueue<>();
         for(DiagramPoint point: points) {
@@ -112,20 +112,20 @@ public class VoronoiDiagram {
     private class Arc implements Comparable<Arc> {
 
         private final DiagramPoint focus;
-        private final float leftBorder;
-        private final float rightBorder;
+        private final double leftBorder;
+        private final double rightBorder;
 
-        private Arc(DiagramPoint focus, float leftBorder, float rightBorder) {
+        private Arc(DiagramPoint focus, double leftBorder, double rightBorder) {
             this.focus = focus;
             this.leftBorder = leftBorder;
             this.rightBorder = rightBorder;
         }
 
-        private QuadraticEquation getIntersectionEquation(Arc secondArc, float sweepline) {
-            float x1 = focus.getX();
-            float y1 = focus.getY();
-            float x2 = secondArc.focus.getX();
-            float y2 = secondArc.focus.getY();
+        private QuadraticEquation getIntersectionEquation(Arc secondArc, double sweepline) {
+            double x1 = focus.getX();
+            double y1 = focus.getY();
+            double x2 = secondArc.focus.getX();
+            double y2 = secondArc.focus.getY();
             return new QuadraticEquation(
                     y2 - y1,
                     -2 * (x1 * (y2 - sweepline) - x2 * (y1 - sweepline)),
@@ -134,17 +134,17 @@ public class VoronoiDiagram {
             );
         }
 
-        private Float intersectLeft(Arc secondArc, float sweepline) {
+        private Double intersectLeft(Arc secondArc, double sweepline) {
             return getIntersectionEquation(secondArc, sweepline).getLesserRoot();
         }
 
-        private Float intersectRight(Arc secondArc, float sweepline) {
+        private Double intersectRight(Arc secondArc, double sweepline) {
             return getIntersectionEquation(secondArc, sweepline).getLesserRoot();
         }
 
         @Override
         public int compareTo(Arc o) {
-            return Float.compare(this.leftBorder, o.leftBorder);
+            return Double.compare(this.leftBorder, o.leftBorder);
         }
     }
 
@@ -159,18 +159,18 @@ public class VoronoiDiagram {
     private abstract class Event implements Comparable<Event> {
 
         EventType type;
-        float newSweepLine;
+        double newSweepLine;
 
         Event() {
             this.type = EventType.NEW_POINT;
-            this.newSweepLine = Float.MAX_VALUE;
+            this.newSweepLine = Double.MAX_VALUE;
         }
 
         abstract void resolveEvent();
 
         @Override
         public int compareTo(Event o) {
-            return Float.compare(newSweepLine, o.newSweepLine);
+            return Double.compare(newSweepLine, o.newSweepLine);
         }
 
     }
@@ -196,7 +196,7 @@ public class VoronoiDiagram {
 
         private final Arc leftArc, midArc, rightArc;
 
-        EventNewCorner(Arc leftArc, Arc midArc, Arc rightArc, float newSweepLine) {
+        EventNewCorner(Arc leftArc, Arc midArc, Arc rightArc, double newSweepLine) {
             super();
             this.type = EventType.NEW_CORNER;
             this.leftArc = leftArc;

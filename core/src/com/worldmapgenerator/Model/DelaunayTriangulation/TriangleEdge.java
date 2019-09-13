@@ -23,6 +23,10 @@ public class TriangleEdge {
         numberOfAppearances++;
     }
 
+    void connectPoints() {
+        p1.addNeighbourPoint(p2);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
