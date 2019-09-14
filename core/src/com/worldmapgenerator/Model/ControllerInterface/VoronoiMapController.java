@@ -1,6 +1,6 @@
 package com.worldmapgenerator.Model.ControllerInterface;
 
-public interface DelaunayMapController extends GenericController {
+public interface VoronoiMapController extends GenericController {
 
     void drawMap();
 

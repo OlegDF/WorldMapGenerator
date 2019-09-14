@@ -36,11 +36,11 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
         return Collections.unmodifiableSet(neighbourPoints);
     }
 
-    Set<DiagramCorner> getNeighbourCorners() {
+    public Set<DiagramCorner> getNeighbourCorners() {
         return Collections.unmodifiableSet(neighbourCorners);
     }
 
-    Set<DiagramEdge> getNeighbourEdges() {
+    public Set<DiagramEdge> getNeighbourEdges() {
         return Collections.unmodifiableSet(neighbourEdges);
     }
 

@@ -118,6 +118,9 @@ public class DelaunayTriangulation {
         for(DiagramPoint point: points) {
             addPointToTriangulation(triangles, point);
         }
+        for(Triangle triangle: triangles) {
+            triangle.createCircumcenter(supertrianglePoint1, supertrianglePoint2, supertrianglePoint3);
+        }
         cleanUpSupertriangle(triangles);
         return triangles;
     }

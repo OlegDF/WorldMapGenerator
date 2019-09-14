@@ -3,6 +3,7 @@ package com.worldmapgenerator.Model.DiagramStructure;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class DiagramCorner {
 
@@ -26,23 +27,31 @@ public class DiagramCorner {
 
     void addNeighbourCorner(DiagramCorner c) {
         neighbourCorners.add(c);
-        c.addNeighbourCorner(this);
+        c.neighbourCorners.add(this);
     }
 
     void addNeighbourEdge(DiagramEdge e) {
         neighbourEdges.add(e);
     }
 
-    List<DiagramCorner> getNeighbourCorners() {
+    public List<DiagramCorner> getNeighbourCorners() {
         return Collections.unmodifiableList(neighbourCorners);
     }
 
-    List<DiagramPoint> getNeighbourPoints() {
+    public List<DiagramPoint> getNeighbourPoints() {
         return Collections.unmodifiableList(neighbourPoints);
     }
 
-    List<DiagramEdge> getNeighbourEdges() {
+    public List<DiagramEdge> getNeighbourEdges() {
         return Collections.unmodifiableList(neighbourEdges);
+    }
+
+    public double convertedAngle(DiagramPoint point) {
+        double angle = Math.atan2(y - point.getY(), x - point.getX());
+        if(angle < 0) {
+            angle = Math.PI * 2 + angle;
+        }
+        return angle;
     }
 
     public double getX() {
@@ -51,6 +60,20 @@ public class DiagramCorner {
 
     public double getY() {
         return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DiagramCorner that = (DiagramCorner) o;
+        return Double.compare(that.getX(), getX()) == 0 &&
+                Double.compare(that.getY(), getY()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
     }
 
 }

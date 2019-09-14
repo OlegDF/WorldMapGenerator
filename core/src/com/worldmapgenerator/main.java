@@ -1,15 +1,15 @@
 package com.worldmapgenerator;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.worldmapgenerator.Controller.SimplestDelaunayController;
+import com.worldmapgenerator.Controller.SimplestVoronoiController;
 
 public class main extends ApplicationAdapter {
 
-	private SimplestDelaunayController controller;
+	private SimplestVoronoiController controller;
 	
 	@Override
 	public void create () {
-		controller = new SimplestDelaunayController();
+		controller = new SimplestVoronoiController();
 	}
 
 	@Override

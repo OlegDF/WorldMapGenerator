@@ -14,14 +14,29 @@ public class SimplestView {
     }
 
     public void render(GenericVisualInfo info) {
-        final int windowWidth = Gdx.graphics.getWidth();
+        final int windowWidth = Gdx.graphics.getHeight();
         final int windowHeight = Gdx.graphics.getHeight();
         shape.begin(ShapeRenderer.ShapeType.Filled);
         Gdx.gl.glClearColor( 0, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-        renderConnections(info, windowWidth, windowHeight);
+        renderPolygons(info, windowWidth, windowHeight);
+        //renderConnections(info, windowWidth, windowHeight);
         renderPoints(info, windowWidth, windowHeight);
         shape.end();
+    }
+
+    private void renderPolygons(GenericVisualInfo info, int windowWidth, int windowHeight) {
+        for(String polygonDescription : info.getPolygonsDescription()) {
+            String[] decypheredDescription = polygonDescription.split(";");
+            int l = (decypheredDescription.length / 2) * 2;
+            shape.setColor(0.16f, 0.66f, 0.16f, 1);
+            for(int i = 0; i < l; i += 2) {
+                shape.rectLine(Float.parseFloat(decypheredDescription[i % l]) * windowWidth,
+                        Float.parseFloat(decypheredDescription[(i + 1) % l]) * windowHeight,
+                        Float.parseFloat(decypheredDescription[(i + 2) % l]) * windowWidth,
+                        Float.parseFloat(decypheredDescription[(i + 3) % l]) * windowHeight, 3f);
+            }
+        }
     }
 
     private void renderConnections(GenericVisualInfo info, int windowWidth, int windowHeight) {
