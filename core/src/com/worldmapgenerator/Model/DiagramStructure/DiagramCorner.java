@@ -48,7 +48,7 @@ public class DiagramCorner {
 
     public double convertedAngle(DiagramPoint point) {
         double angle = Math.atan2(y - point.getY(), x - point.getX());
-        if(angle < 0) {
+        if (angle < 0) {
             angle = Math.PI * 2 + angle;
         }
         return angle;

@@ -1,6 +1,7 @@
 package com.worldmapgenerator;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.worldmapgenerator.Controller.SimplestVoronoiController;
 
 public class main extends ApplicationAdapter {
@@ -14,7 +15,7 @@ public class main extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		controller.update();
+		controller.update(Gdx.graphics.getDeltaTime());
 	}
 	
 	@Override

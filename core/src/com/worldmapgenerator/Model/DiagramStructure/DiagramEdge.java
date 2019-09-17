@@ -10,7 +10,7 @@ public class DiagramEdge {
     public DiagramEdge(DiagramCorner c1, DiagramCorner c2, DiagramPoint p1, DiagramPoint p2) {
         this.c1 = c1;
         this.c2 = c2;
-        if(p1.compareTo(p2) < 0) {
+        if (p1.compareTo(p2) < 0) {
             this.p1 = p1;
             this.p2 = p2;
         } else {
@@ -23,7 +23,7 @@ public class DiagramEdge {
         c1.addNeighbourEdge(this);
         c2.addNeighbourEdge(this);
         c1.addNeighbourCorner(c2);
-        if(p1.getY() > 1 || p2.getY() > 1) {
+        if (p1.getY() > 1 || p2.getY() > 1) {
             System.out.println("Supertriangle detected");
         }
     }

@@ -4,13 +4,13 @@ import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
 
 import java.util.Objects;
 
-public class TriangleEdge {
+class TriangleEdge {
 
     DiagramPoint p1, p2;
     int numberOfAppearances = 1;
 
     TriangleEdge(DiagramPoint p1, DiagramPoint p2) {
-        if(p1.compareTo(p2) < 0) {
+        if (p1.compareTo(p2) < 0) {
             this.p1 = p1;
             this.p2 = p2;
         } else {

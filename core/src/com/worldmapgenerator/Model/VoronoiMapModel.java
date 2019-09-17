@@ -13,7 +13,8 @@ public class VoronoiMapModel {
     }
 
     public GenericVisualInfo getInfo() {
-        return new VoronoiVisualInfo(diagram.getPoints());
+        return new VoronoiVisualInfo(diagram.getPoints(), diagram.getMapBorderLeft(), diagram.getMapBorderBottom(),
+                diagram.getMapBorderRight(), diagram.getMapBorderTop());
     }
 
 }

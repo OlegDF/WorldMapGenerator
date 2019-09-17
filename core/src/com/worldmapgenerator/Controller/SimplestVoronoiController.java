@@ -21,13 +21,23 @@ public class SimplestVoronoiController implements GenericController, SimplestCon
         view.render(model.getInfo());
     }
 
-    public void update() {
+    public void update(double tickDuration) {
         drawMap();
-        if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             model = new VoronoiMapModel();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+           view.switchPoints();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            view.switchConnections();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            view.switchPolygons();
         }
     }
 
-    public void dispose() {}
+    public void dispose() {
+    }
 
 }

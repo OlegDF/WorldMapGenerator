@@ -54,7 +54,7 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
 
     @Override
     public int compareTo(DiagramPoint o) {
-        if(this.getY() == o.getY()) {
+        if (this.getY() == o.getY()) {
             return Double.compare(this.getX(), o.getX());
         } else {
             return Double.compare(this.getY(), o.getY());
