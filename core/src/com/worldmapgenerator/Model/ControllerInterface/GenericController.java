@@ -1,5 +1,7 @@
 package com.worldmapgenerator.Model.ControllerInterface;
 
+import com.worldmapgenerator.Input.CommandType;
+
 public interface GenericController {
 
     /**
@@ -12,5 +14,11 @@ public interface GenericController {
      * Удаляет все ресурсы программы
      */
     void dispose();
+
+    /**
+     * Получает команду с ввода и выполняет действие в соответствии с её типом
+     * @param command - тип команды
+     */
+    void receiveCommand(CommandType command);
 
 }

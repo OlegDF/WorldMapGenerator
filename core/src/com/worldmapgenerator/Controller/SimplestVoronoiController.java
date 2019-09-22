@@ -1,7 +1,7 @@
 package com.worldmapgenerator.Controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.worldmapgenerator.Input.CommandType;
+import com.worldmapgenerator.Input.SimplestKeyboardInput;
 import com.worldmapgenerator.Model.ControllerInterface.VoronoiMapController;
 import com.worldmapgenerator.Model.ControllerInterface.GenericController;
 import com.worldmapgenerator.Model.VoronoiMapModel;
@@ -11,10 +11,12 @@ public class SimplestVoronoiController implements GenericController, SimplestCon
 
     private VoronoiMapModel model;
     private SimplestView view;
+    private SimplestKeyboardInput input;
 
     public SimplestVoronoiController() {
         model = new VoronoiMapModel();
         view = new SimplestView();
+        input = new SimplestKeyboardInput();
     }
 
     public void drawMap() {
@@ -23,21 +25,27 @@ public class SimplestVoronoiController implements GenericController, SimplestCon
 
     public void update(double tickDuration) {
         drawMap();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            model = new VoronoiMapModel();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
-           view.switchPoints();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            view.switchConnections();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            view.switchPolygons();
-        }
+        input.listenForInput(this);
     }
 
     public void dispose() {
+    }
+
+    public void receiveCommand(CommandType command) {
+        switch(command) {
+            case GENERATE_NEW_MAP:
+                model = new VoronoiMapModel();
+                break;
+            case HIDE_POINTS:
+                view.switchPoints();
+                break;
+            case HIDE_CONNECTIONS:
+                view.switchConnections();
+                break;
+            case HIDE_POLYGONS:
+                view.switchPolygons();
+                break;
+        }
     }
 
 }

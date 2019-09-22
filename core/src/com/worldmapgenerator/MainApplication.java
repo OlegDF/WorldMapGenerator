@@ -3,10 +3,11 @@ package com.worldmapgenerator;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.worldmapgenerator.Controller.SimplestVoronoiController;
+import com.worldmapgenerator.Model.ControllerInterface.GenericController;
 
 public class MainApplication extends ApplicationAdapter {
 
-    private SimplestVoronoiController controller;
+    private GenericController controller;
 
     @Override
     public void create() {
