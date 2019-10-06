@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Угол одного или более многоугольников диаграммы; вершина нескольких рёбер
+ */
 public class DiagramCorner {
 
     private final double x, y;
@@ -46,6 +49,11 @@ public class DiagramCorner {
         return Collections.unmodifiableList(neighbourEdges);
     }
 
+    /**
+     * Получает угол вектора между данной вершиной и этим углом, против часовой стрелки
+     * @param point - вершина - начало вектора
+     * @return угол в радианах
+     */
     public double convertedAngle(DiagramPoint point) {
         double angle = Math.atan2(y - point.getY(), x - point.getX());
         if (angle < 0) {

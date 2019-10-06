@@ -2,6 +2,9 @@ package com.worldmapgenerator.Model.DiagramStructure;
 
 import java.util.Objects;
 
+/**
+ * Сторона одного или двух соседних многоугольников диаграммы; соединено с двумя углами и двумя вершинами
+ */
 public class DiagramEdge {
 
     private final DiagramCorner c1, c2;

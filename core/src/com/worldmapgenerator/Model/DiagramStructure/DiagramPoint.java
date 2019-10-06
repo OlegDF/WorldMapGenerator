@@ -11,6 +11,7 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
     private final Set<DiagramCorner> neighbourCorners;
     private final Set<DiagramEdge> neighbourEdges;
 
+
     public DiagramPoint(double x, double y) {
         this.x = x;
         this.y = y;
@@ -53,6 +54,11 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
         return y;
     }
 
+    /**
+     * Получает центр многоугольника вокруг этой вершины в виде новой вершины
+     * @param border - ограничительная рамка
+     * @return центр многоугольника
+     */
     public DiagramPoint getPolygonCenter(Border border) {
         double newPointX = 0;
         double newPointY = 0;

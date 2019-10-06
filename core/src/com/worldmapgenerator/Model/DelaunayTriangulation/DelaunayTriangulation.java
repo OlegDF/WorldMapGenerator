@@ -5,6 +5,10 @@ import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
 
 import java.util.*;
 
+/**
+ * Триангуляция Делоне - набор вершин, соединенных в плоский граф из треугольников так, что ни один из треугольников
+ * не содержит никаких вершин в своей описанной окружности, кроме своих трех
+ */
 public class DelaunayTriangulation {
 
     private final List<DiagramPoint> points;

@@ -9,6 +9,10 @@ import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Диаграмма Вороного - набор вершин и многоугольников вокруг них, состоящих из всех точек, для которых эта вершина ближайшая.
+ * Также содержит в себе триангуляцию Делоне.
+ */
 public class VoronoiDiagram {
 
     private final DelaunayTriangulation triangulation;
