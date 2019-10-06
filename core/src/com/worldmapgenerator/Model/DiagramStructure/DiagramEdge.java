@@ -23,9 +23,6 @@ public class DiagramEdge {
         c1.addNeighbourEdge(this);
         c2.addNeighbourEdge(this);
         c1.addNeighbourCorner(c2);
-        if (p1.getY() > 1 || p2.getY() > 1) {
-            System.out.println("Supertriangle detected");
-        }
     }
 
     public DiagramCorner getC1() {

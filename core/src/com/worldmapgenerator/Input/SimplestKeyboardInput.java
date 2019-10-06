@@ -8,6 +8,9 @@ public class SimplestKeyboardInput implements GenericInput {
 
     public void listenForInput(GenericController controller) {
         if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            controller.receiveCommand(CommandType.RELAX_MAP);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             controller.receiveCommand(CommandType.GENERATE_NEW_MAP);
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {

@@ -1,5 +1,6 @@
 package com.worldmapgenerator.Model.VisualInformation;
 
+import com.worldmapgenerator.Model.DiagramStructure.Border;
 import com.worldmapgenerator.Model.DiagramStructure.DiagramCorner;
 import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
 
@@ -11,14 +12,13 @@ public class VoronoiVisualInfo implements GenericVisualInfo {
     private Set<String> connectionsDescription;
     private Set<String> polygonsDescription;
 
-    private double borderLeft, borderBottom, borderRight, borderTop;
+    private Border border;
 
     /**
      * Создает описания элементов - вершин графа, ребер между вершинами и границ многоугольников - по диаграмме Вороного
      * @param points - набор вершиин, составляющих диаграмму Вороного
      */
-    public VoronoiVisualInfo(final List<DiagramPoint> points, double borderLeft, double borderBottom, double borderRight,
-                             double borderTop) {
+    public VoronoiVisualInfo(final List<DiagramPoint> points, Border border) {
         pointsDescription = new HashSet<>();
         connectionsDescription = new HashSet<>();
         polygonsDescription = new HashSet<>();
@@ -44,10 +44,7 @@ public class VoronoiVisualInfo implements GenericVisualInfo {
             }
             polygonsDescription.add(polygon.toString());
         }
-        this.borderLeft = borderLeft;
-        this.borderBottom = borderBottom;
-        this.borderRight = borderRight;
-        this.borderTop = borderTop;
+        this.border = border;
     }
 
     /**
@@ -73,22 +70,22 @@ public class VoronoiVisualInfo implements GenericVisualInfo {
 
     @Override
     public double getMapBorderLeft() {
-        return borderLeft;
+        return border.borderLeft;
     }
 
     @Override
     public double getMapBorderBottom() {
-        return borderBottom;
+        return border.borderBottom;
     }
 
     @Override
     public double getMapBorderRight() {
-        return borderRight;
+        return border.borderRight;
     }
 
     @Override
     public double getMapBorderTop() {
-        return borderTop;
+        return border.borderTop;
     }
 
 }

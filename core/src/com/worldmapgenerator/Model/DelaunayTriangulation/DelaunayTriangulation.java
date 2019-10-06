@@ -1,38 +1,25 @@
 package com.worldmapgenerator.Model.DelaunayTriangulation;
 
+import com.worldmapgenerator.Model.DiagramStructure.Border;
 import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
 
 import java.util.*;
 
 public class DelaunayTriangulation {
 
-    private final ArrayList<DiagramPoint> points;
-    private final ArrayList<Triangle> triangles;
+    private final List<DiagramPoint> points;
+    private final List<Triangle> triangles;
 
-    private final double borderLeft, borderRight, borderBottom, borderTop;
+    private final Border border;
     private final int numberOfPoints;
 
     private DiagramPoint supertrianglePoint1, supertrianglePoint2, supertrianglePoint3;
 
     private boolean checkingEnabled = false;
 
-    private DelaunayTriangulation(int numberOfPoints, double borderLeft, double borderBottom, double borderRight,
-                                  double borderTop, long seed) {
+    private DelaunayTriangulation(int numberOfPoints, Border border, long seed) {
         this.numberOfPoints = numberOfPoints;
-        if (borderRight < borderLeft) {
-            double swap = borderRight;
-            borderRight = borderLeft;
-            borderLeft = swap;
-        }
-        if (borderTop < borderBottom) {
-            double swap = borderTop;
-            borderTop = borderBottom;
-            borderBottom = swap;
-        }
-        this.borderLeft = borderLeft;
-        this.borderBottom = borderBottom;
-        this.borderRight = borderRight;
-        this.borderTop = borderTop;
+        this.border = border;
         points = generatePoints(seed);
         triangles = generateTriangles();
         constructDiagram();
@@ -41,37 +28,27 @@ public class DelaunayTriangulation {
         }
     }
 
+    private DelaunayTriangulation(List<DiagramPoint> points, Border border) {
+        this.numberOfPoints = points.size();
+        this.border = border;
+        this.points = points;
+        triangles = generateTriangles();
+        constructDiagram();
+    }
+
     /**
      * Создает диаграмму с произвольными крайними точками
      */
-    public static DelaunayTriangulation randomTriangulation(int numberOfPoints, double borderLeft, double borderBottom,
-                                                            double borderRight, double borderTop) {
-        return new DelaunayTriangulation(numberOfPoints, borderLeft, borderBottom, borderRight, borderTop,
-                (long) (Math.random() * Integer.MAX_VALUE));
+    public static DelaunayTriangulation randomTriangulation(int numberOfPoints, Border border) {
+        return new DelaunayTriangulation(numberOfPoints, border, (long) (Math.random() * Integer.MAX_VALUE));
     }
 
     /**
      * Создает диаграмму с произвольными крайними точками и заданным зерном (т. е. при одном и том же seed
      * генерируются одинаковые диаграммы)
      */
-    public static DelaunayTriangulation seededTriangulation(int numberOfPoints, double borderLeft, double borderBottom,
-                                                            double borderRight, double borderTop, long seed) {
-        return new DelaunayTriangulation(numberOfPoints, borderLeft, borderBottom, borderRight, borderTop, seed);
-    }
-
-    /**
-     * Создает диаграмму с левым нижним углом в (0, 0)
-     */
-    public static DelaunayTriangulation randomTriangulationStartingAt00(int numberOfPoints, double borderRight, double borderTop) {
-        return new DelaunayTriangulation(numberOfPoints, 0, 0, borderRight, borderTop,
-                (long) (Math.random() * Integer.MAX_VALUE));
-    }
-
-    /**
-     * Создает диаграмму с левым нижним углом в (0, 0)
-     */
-    public static DelaunayTriangulation seededTriangulationStartingAt00(int numberOfPoints, double borderRight, double borderTop, long seed) {
-        return new DelaunayTriangulation(numberOfPoints, 0, 0, borderRight, borderTop, seed);
+    public static DelaunayTriangulation seededTriangulation(int numberOfPoints, Border border, long seed) {
+        return new DelaunayTriangulation(numberOfPoints, border, seed);
     }
 
     /**
@@ -84,8 +61,8 @@ public class DelaunayTriangulation {
         ArrayList<DiagramPoint> newPoints = new ArrayList<>();
         Random random = new Random(seed);
         for (int i = 0; i < numberOfPoints; i++) {
-            double newX = borderLeft + random.nextDouble() * (borderRight - borderLeft);
-            double newY = borderBottom + random.nextDouble() * (borderTop - borderBottom);
+            double newX = border.borderLeft + random.nextDouble() * (border.borderRight - border.borderLeft);
+            double newY = border.borderBottom + random.nextDouble() * (border.borderTop - border.borderBottom);
             newPoints.add(new DiagramPoint(newX, newY));
         }
         Collections.sort(newPoints, new Comparator<DiagramPoint>() {
@@ -102,18 +79,18 @@ public class DelaunayTriangulation {
     }
 
     /**
-     * Создает триангуляцию з=созданного массива точек в виде массива треугольников
+     * Создает триангуляцию созданного массива точек в виде массива треугольников
      * @return созданный массив
      */
     private ArrayList<Triangle> generateTriangles() {
         ArrayList<Triangle> triangles = new ArrayList<>();
         //первоначальный треугольник, включающий в себя все сгенерированные точки
-        supertrianglePoint1 = new DiagramPoint(borderLeft - (borderRight - borderLeft),
-                borderBottom - (borderTop - borderBottom));
-        supertrianglePoint2 = new DiagramPoint(borderLeft + (borderRight - borderLeft) / 2,
-                borderTop + (borderTop - borderBottom) * 2);
-        supertrianglePoint3 = new DiagramPoint(borderLeft + (borderRight - borderLeft) * 2,
-                borderBottom - (borderTop - borderBottom));
+        supertrianglePoint1 = new DiagramPoint(border.borderLeft - (border.borderRight - border.borderLeft),
+                border.borderBottom - (border.borderTop - border.borderBottom));
+        supertrianglePoint2 = new DiagramPoint(border.borderLeft + (border.borderRight - border.borderLeft) / 2,
+                border.borderTop + (border.borderTop - border.borderBottom) * 2);
+        supertrianglePoint3 = new DiagramPoint(border.borderLeft + (border.borderRight - border.borderLeft) * 2,
+                border.borderBottom - (border.borderTop - border.borderBottom));
         triangles.add(new Triangle(supertrianglePoint1, supertrianglePoint2, supertrianglePoint3));
         for (DiagramPoint point : points) {
             addPointToTriangulation(triangles, point);
@@ -192,10 +169,18 @@ public class DelaunayTriangulation {
         }
     }
 
+    public DelaunayTriangulation getLloydRelaxation() {
+        ArrayList<DiagramPoint> newPoints = new ArrayList<>();
+        for(DiagramPoint point: points) {
+            newPoints.add(point.getPolygonCenter(border));
+        }
+        return new DelaunayTriangulation(newPoints, border);
+    }
+
     /**
      * @return набор вершин, определяющих диаграмму
      */
-    public ArrayList<DiagramPoint> getPoints() {
+    public List<DiagramPoint> getPoints() {
         return points;
     }
 
@@ -220,20 +205,8 @@ public class DelaunayTriangulation {
         }
     }
 
-    public double getMapBorderLeft() {
-        return borderLeft;
-    }
-
-    public double getMapBorderBottom() {
-        return borderBottom;
-    }
-
-    public double getMapBorderRight() {
-        return borderRight;
-    }
-
-    public double getMapBorderTop() {
-        return borderTop;
+    public Border getMapBorder() {
+        return border;
     }
 
 }

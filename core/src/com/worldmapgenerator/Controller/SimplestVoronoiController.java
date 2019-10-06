@@ -36,6 +36,9 @@ public class SimplestVoronoiController implements GenericController, SimplestCon
             case GENERATE_NEW_MAP:
                 model = new VoronoiMapModel();
                 break;
+            case RELAX_MAP:
+                model.relaxMap();
+                break;
             case HIDE_POINTS:
                 view.switchPoints();
                 break;
