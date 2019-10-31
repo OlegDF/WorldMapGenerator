@@ -17,12 +17,12 @@ public class VoronoiDiagram {
 
     private final DelaunayTriangulation triangulation;
 
-    private VoronoiDiagram(int numberOfPoints, Border border, long seed) {
+    private VoronoiDiagram(final int numberOfPoints, final Border border, final long seed) {
         triangulation = DelaunayTriangulation.seededTriangulation(numberOfPoints, border, seed);
         generatePolygons();
     }
 
-    private VoronoiDiagram(DelaunayTriangulation triangulation) {
+    private VoronoiDiagram(final DelaunayTriangulation triangulation) {
         this.triangulation = triangulation;
         generatePolygons();
     }
@@ -33,7 +33,7 @@ public class VoronoiDiagram {
      * @param border - координаты левого нижнего и правого верхнего углов
      * @return диаграмма Вороного
      */
-    public static VoronoiDiagram randomDiagram(int numberOfPoints, Border border) {
+    public static VoronoiDiagram randomDiagram(final int numberOfPoints, final Border border) {
         return new VoronoiDiagram(numberOfPoints, border, (long) (Math.random() * Integer.MAX_VALUE));
     }
 
@@ -45,7 +45,7 @@ public class VoronoiDiagram {
      * @param seed - зерно
      * @return диаграмма Вороного
      */
-    public static VoronoiDiagram seededDiagram(int numberOfPoints, Border border, long seed) {
+    public static VoronoiDiagram seededDiagram(final int numberOfPoints, final Border border, final long seed) {
         return new VoronoiDiagram(numberOfPoints, border, seed);
     }
 
@@ -54,18 +54,18 @@ public class VoronoiDiagram {
      */
     private void generatePolygons() {
         for (final DiagramPoint point : triangulation.getPoints()) {
-            List<DiagramCorner> corners = new ArrayList<>(point.getNeighbourCorners());
+            final List<DiagramCorner> corners = new ArrayList<>(point.getNeighbourCorners());
             Collections.sort(corners, new Comparator<DiagramCorner>() {
                 @Override
-                public int compare(DiagramCorner o1, DiagramCorner o2) {
+                public int compare(final DiagramCorner o1, final DiagramCorner o2) {
                     return Double.compare(o1.convertedAngle(point), o2.convertedAngle(point));
                 }
             });
             for (int i = 0; i < corners.size(); i++) {
-                DiagramCorner corner1 = corners.get(i);
-                DiagramCorner corner2 = corners.get((i + 1) % corners.size());
+                final DiagramCorner corner1 = corners.get(i);
+                final DiagramCorner corner2 = corners.get((i + 1) % corners.size());
                 DiagramPoint point2 = null;
-                for (DiagramPoint neighbour : corner1.getNeighbourPoints()) {
+                for (final DiagramPoint neighbour : corner1.getNeighbourPoints()) {
                     if (corner2.getNeighbourPoints().contains(neighbour)) {
                         point2 = neighbour;
                     }

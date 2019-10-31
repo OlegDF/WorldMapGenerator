@@ -14,7 +14,7 @@ public class VoronoiMapModel {
     }
 
     public void relaxMap() {
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             diagram = diagram.getLloydRelaxation();
         }
     }

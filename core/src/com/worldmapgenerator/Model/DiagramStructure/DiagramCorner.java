@@ -16,7 +16,7 @@ public class DiagramCorner {
     private final ArrayList<DiagramPoint> neighbourPoints;
     private final ArrayList<DiagramEdge> neighbourEdges;
 
-    public DiagramCorner(double x, double y) {
+    public DiagramCorner(final double x, final double y) {
         this.x = x;
         this.y = y;
         neighbourCorners = new ArrayList<>();
@@ -24,16 +24,16 @@ public class DiagramCorner {
         neighbourEdges = new ArrayList<>();
     }
 
-    void addNeighbourPoint(DiagramPoint p) {
+    void addNeighbourPoint(final DiagramPoint p) {
         neighbourPoints.add(p);
     }
 
-    void addNeighbourCorner(DiagramCorner c) {
+    void addNeighbourCorner(final DiagramCorner c) {
         neighbourCorners.add(c);
         c.neighbourCorners.add(this);
     }
 
-    void addNeighbourEdge(DiagramEdge e) {
+    void addNeighbourEdge(final DiagramEdge e) {
         neighbourEdges.add(e);
     }
 
@@ -51,10 +51,11 @@ public class DiagramCorner {
 
     /**
      * Получает угол вектора между данной вершиной и этим углом, против часовой стрелки
+     *
      * @param point - вершина - начало вектора
      * @return угол в радианах
      */
-    public double convertedAngle(DiagramPoint point) {
+    public double convertedAngle(final DiagramPoint point) {
         double angle = Math.atan2(y - point.getY(), x - point.getX());
         if (angle < 0) {
             angle = Math.PI * 2 + angle;
@@ -71,10 +72,10 @@ public class DiagramCorner {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DiagramCorner that = (DiagramCorner) o;
+        final DiagramCorner that = (DiagramCorner) o;
         return Double.compare(that.getX(), getX()) == 0 &&
                 Double.compare(that.getY(), getY()) == 0;
     }

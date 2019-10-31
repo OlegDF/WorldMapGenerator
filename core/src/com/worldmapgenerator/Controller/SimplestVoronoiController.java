@@ -10,8 +10,8 @@ import com.worldmapgenerator.View.SimplestView;
 public class SimplestVoronoiController implements GenericController, SimplestController, VoronoiMapController {
 
     private VoronoiMapModel model;
-    private SimplestView view;
-    private SimplestKeyboardInput input;
+    private final SimplestView view;
+    private final SimplestKeyboardInput input;
 
     public SimplestVoronoiController() {
         model = new VoronoiMapModel();
@@ -23,7 +23,7 @@ public class SimplestVoronoiController implements GenericController, SimplestCon
         view.render(model.getInfo());
     }
 
-    public void update(double tickDuration) {
+    public void update(final double tickDuration) {
         drawMap();
         input.listenForInput(this);
     }
@@ -31,8 +31,8 @@ public class SimplestVoronoiController implements GenericController, SimplestCon
     public void dispose() {
     }
 
-    public void receiveCommand(CommandType command) {
-        switch(command) {
+    public void receiveCommand(final CommandType command) {
+        switch (command) {
             case GENERATE_NEW_MAP:
                 model = new VoronoiMapModel();
                 break;

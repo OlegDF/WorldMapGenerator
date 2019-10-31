@@ -12,7 +12,7 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
     private final Set<DiagramEdge> neighbourEdges;
 
 
-    public DiagramPoint(double x, double y) {
+    public DiagramPoint(final double x, final double y) {
         this.x = x;
         this.y = y;
         neighbourPoints = new HashSet<>();
@@ -20,17 +20,17 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
         neighbourEdges = new HashSet<>();
     }
 
-    public void addNeighbourPoint(DiagramPoint p) {
+    public void addNeighbourPoint(final DiagramPoint p) {
         neighbourPoints.add(p);
         p.neighbourPoints.add(this);
     }
 
-    public void addNeighbourCorner(DiagramCorner c) {
+    public void addNeighbourCorner(final DiagramCorner c) {
         neighbourCorners.add(c);
         c.addNeighbourPoint(this);
     }
 
-    void addNeighbourEdge(DiagramEdge e) {
+    void addNeighbourEdge(final DiagramEdge e) {
         neighbourEdges.add(e);
     }
 
@@ -56,10 +56,11 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
 
     /**
      * Получает центр многоугольника вокруг этой вершины в виде новой вершины
+     *
      * @param border - ограничительная рамка
      * @return центр многоугольника
      */
-    public DiagramPoint getPolygonCenter(Border border) {
+    public DiagramPoint getPolygonCenter(final Border border) {
         double newPointX = 0;
         double newPointY = 0;
         double cornersNum = 0;
@@ -67,92 +68,92 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
         boolean touchesRight = false;
         boolean touchesBottom = false;
         boolean touchesTop = false;
-        List<DiagramCorner> corners = new ArrayList<>(neighbourCorners);
+        final List<DiagramCorner> corners = new ArrayList<>(neighbourCorners);
         final DiagramPoint point = this;
         Collections.sort(corners, new Comparator<DiagramCorner>() {
             @Override
-            public int compare(DiagramCorner o1, DiagramCorner o2) {
+            public int compare(final DiagramCorner o1, final DiagramCorner o2) {
                 return Double.compare(o1.convertedAngle(point), o2.convertedAngle(point));
             }
         });
         for (int i = 0; i < corners.size(); i++) {
-            DiagramCorner corner1 = corners.get(i);
-            DiagramCorner corner2 = corners.get((i + 1) % corners.size());
-            Border.PointPosition pos1 = border.determinePosition(corner1.getX(), corner1.getY());
-            Border.PointPosition pos2 = border.determinePosition(corner2.getX(), corner2.getY());
-            if(pos1 == Border.PointPosition.INSIDE || pos1 == Border.PointPosition.ON_BORDER) {
+            final DiagramCorner corner1 = corners.get(i);
+            final DiagramCorner corner2 = corners.get((i + 1) % corners.size());
+            final Border.PointPosition pos1 = border.determinePosition(corner1.getX(), corner1.getY());
+            final Border.PointPosition pos2 = border.determinePosition(corner2.getX(), corner2.getY());
+            if (pos1 == Border.PointPosition.INSIDE || pos1 == Border.PointPosition.ON_BORDER) {
                 newPointX += corner1.getX();
                 newPointY += corner1.getY();
                 cornersNum++;
             }
-            if(pos1 == Border.PointPosition.INSIDE && pos2 == Border.PointPosition.OUTSIDE ||
+            if (pos1 == Border.PointPosition.INSIDE && pos2 == Border.PointPosition.OUTSIDE ||
                     pos1 == Border.PointPosition.OUTSIDE && pos2 == Border.PointPosition.INSIDE) {
-                Point2D intersectionLeft = border.getIntersectionLeft(corner1.getX(), corner1.getY(),
+                final Point2D intersectionLeft = border.getIntersectionLeft(corner1.getX(), corner1.getY(),
                         corner2.getX(), corner2.getY());
-                Point2D intersectionRight = border.getIntersectionRight(corner1.getX(), corner1.getY(),
+                final Point2D intersectionRight = border.getIntersectionRight(corner1.getX(), corner1.getY(),
                         corner2.getX(), corner2.getY());
-                Point2D intersectionBottom = border.getIntersectionBottom(corner1.getX(), corner1.getY(),
+                final Point2D intersectionBottom = border.getIntersectionBottom(corner1.getX(), corner1.getY(),
                         corner2.getX(), corner2.getY());
-                Point2D intersectionTop = border.getIntersectionTop(corner1.getX(), corner1.getY(),
+                final Point2D intersectionTop = border.getIntersectionTop(corner1.getX(), corner1.getY(),
                         corner2.getX(), corner2.getY());
-                if(intersectionLeft != null) {
+                if (intersectionLeft != null) {
                     newPointX += intersectionLeft.getX();
                     newPointY += intersectionLeft.getY();
                     cornersNum++;
                     touchesLeft = true;
                 }
-                if(intersectionRight != null) {
+                if (intersectionRight != null) {
                     newPointX += intersectionRight.getX();
                     newPointY += intersectionRight.getY();
                     cornersNum++;
                     touchesRight = true;
                 }
-                if(intersectionBottom != null) {
+                if (intersectionBottom != null) {
                     newPointX += intersectionBottom.getX();
                     newPointY += intersectionBottom.getY();
                     cornersNum++;
                     touchesBottom = true;
                 }
-                if(intersectionTop != null) {
+                if (intersectionTop != null) {
                     newPointX += intersectionTop.getX();
                     newPointY += intersectionTop.getY();
                     cornersNum++;
                     touchesTop = true;
                 }
             }
-            if(pos1 == Border.PointPosition.OUTSIDE && pos2 == Border.PointPosition.OUTSIDE ||
+            if (pos1 == Border.PointPosition.OUTSIDE && pos2 == Border.PointPosition.OUTSIDE ||
                     pos1 == Border.PointPosition.ON_BORDER && pos2 == Border.PointPosition.OUTSIDE ||
                     pos1 == Border.PointPosition.OUTSIDE && pos2 == Border.PointPosition.ON_BORDER) {
-                if(corner1.getX() < border.borderLeft || corner2.getX() < border.borderLeft) {
+                if (corner1.getX() < border.borderLeft || corner2.getX() < border.borderLeft) {
                     touchesLeft = true;
                 }
-                if(corner1.getX() > border.borderRight || corner2.getX() > border.borderRight) {
+                if (corner1.getX() > border.borderRight || corner2.getX() > border.borderRight) {
                     touchesRight = true;
                 }
-                if(corner1.getY() < border.borderBottom || corner2.getY() < border.borderBottom) {
+                if (corner1.getY() < border.borderBottom || corner2.getY() < border.borderBottom) {
                     touchesBottom = true;
                 }
-                if(corner1.getY() > border.borderTop || corner2.getY() > border.borderTop) {
+                if (corner1.getY() > border.borderTop || corner2.getY() > border.borderTop) {
                     touchesTop = true;
                 }
             }
         }
-        if(touchesLeft && touchesBottom) {
+        if (touchesLeft && touchesBottom) {
             newPointX += border.borderLeft;
             newPointY += border.borderBottom;
             cornersNum++;
         }
-        if(touchesLeft && touchesTop) {
+        if (touchesLeft && touchesTop) {
             newPointX += border.borderLeft;
             newPointY += border.borderTop;
             cornersNum++;
         }
-        if(touchesRight && touchesBottom) {
+        if (touchesRight && touchesBottom) {
             newPointX += border.borderRight;
             newPointY += border.borderBottom;
             cornersNum++;
         }
-        if(touchesRight && touchesTop) {
+        if (touchesRight && touchesTop) {
             newPointX += border.borderRight;
             newPointY += border.borderTop;
             cornersNum++;
@@ -161,7 +162,7 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
     }
 
     @Override
-    public int compareTo(DiagramPoint o) {
+    public int compareTo(final DiagramPoint o) {
         if (this.getY() == o.getY()) {
             return Double.compare(this.getX(), o.getX());
         } else {
@@ -170,10 +171,10 @@ public class DiagramPoint implements Comparable<DiagramPoint> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DiagramPoint point = (DiagramPoint) o;
+        final DiagramPoint point = (DiagramPoint) o;
         return Double.compare(point.getX(), getX()) == 0 &&
                 Double.compare(point.getY(), getY()) == 0;
     }

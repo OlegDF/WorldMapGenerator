@@ -9,7 +9,7 @@ import com.worldmapgenerator.Model.VisualInformation.GenericVisualInfo;
 public class SimplestView {
 
     private OrthographicCamera camera;
-    private ShapeRenderer shape;
+    private final ShapeRenderer shape;
 
     private boolean pointRenderEnabled = true;
     private boolean connectionsRenderEnabled = true;
@@ -21,9 +21,10 @@ public class SimplestView {
 
     /**
      * Изображает на экране элементы модели в виде сетки из вершин графа, ребер между вершинами и границ многоугольников
+     *
      * @param info - данные, принятые от модели
      */
-    public void render(GenericVisualInfo info) {
+    public void render(final GenericVisualInfo info) {
         final int windowWidth = Gdx.graphics.getWidth();
         final int windowHeight = Gdx.graphics.getHeight();
         final int scale = Math.min(windowWidth, windowHeight);
@@ -45,19 +46,19 @@ public class SimplestView {
         shape.end();
     }
 
-    private void createCamera(GenericVisualInfo info, int windowWidth, int windowHeight, int scale) {
+    private void createCamera(final GenericVisualInfo info, final int windowWidth, final int windowHeight, final int scale) {
         camera = new OrthographicCamera(windowWidth, windowHeight);
-        camera.translate(scale / 2f * (float)(info.getMapBorderRight() - info.getMapBorderLeft()) +
-                        scale * (float)info.getMapBorderLeft(),
-                scale / 2f * (float)(info.getMapBorderTop() - info.getMapBorderBottom()) +
-                        scale * (float)info.getMapBorderBottom());
+        camera.translate(scale / 2f * (float) (info.getMapBorderRight() - info.getMapBorderLeft()) +
+                        scale * (float) info.getMapBorderLeft(),
+                scale / 2f * (float) (info.getMapBorderTop() - info.getMapBorderBottom()) +
+                        scale * (float) info.getMapBorderBottom());
         camera.update();
     }
 
-    private void renderPolygons(GenericVisualInfo info, int scale) {
-        for (String polygonDescription : info.getPolygonsDescription()) {
-            String[] decypheredDescription = polygonDescription.split(";");
-            int l = (decypheredDescription.length / 2) * 2;
+    private void renderPolygons(final GenericVisualInfo info, final int scale) {
+        for (final String polygonDescription : info.getPolygonsDescription()) {
+            final String[] decypheredDescription = polygonDescription.split(";");
+            final int l = (decypheredDescription.length / 2) * 2;
             shape.setColor(0.16f, 0.66f, 0.16f, 1);
             for (int i = 0; i < l; i += 2) {
                 shape.rectLine(Float.parseFloat(decypheredDescription[i % l]) * scale,
@@ -68,9 +69,9 @@ public class SimplestView {
         }
     }
 
-    private void renderConnections(GenericVisualInfo info, int scale) {
-        for (String connectionDescription : info.getConnectionsDescription()) {
-            String[] decypheredDescription = connectionDescription.split(";");
+    private void renderConnections(final GenericVisualInfo info, final int scale) {
+        for (final String connectionDescription : info.getConnectionsDescription()) {
+            final String[] decypheredDescription = connectionDescription.split(";");
             shape.setColor(0, 0.33f, 0.66f, 1);
             shape.rectLine(Float.parseFloat(decypheredDescription[0]) * scale,
                     Float.parseFloat(decypheredDescription[1]) * scale,
@@ -79,9 +80,9 @@ public class SimplestView {
         }
     }
 
-    private void renderPoints(GenericVisualInfo info, int scale) {
-        for (String pointDescription : info.getPointsDescription()) {
-            String[] decypheredDescription = pointDescription.split(";");
+    private void renderPoints(final GenericVisualInfo info, final int scale) {
+        for (final String pointDescription : info.getPointsDescription()) {
+            final String[] decypheredDescription = pointDescription.split(";");
             shape.setColor(0.66f, 0, 0.33f, 1);
             shape.circle(Float.parseFloat(decypheredDescription[0]) * scale,
                     Float.parseFloat(decypheredDescription[1]) * scale,
@@ -89,37 +90,37 @@ public class SimplestView {
         }
     }
 
-    private void renderBorders(GenericVisualInfo info, int scale) {
+    private void renderBorders(final GenericVisualInfo info, final int scale) {
         shape.setColor(0, 0, 0, 1);
-        shape.rect(scale * (-3 + (float)info.getMapBorderLeft()),
-                scale * (-3 + (float)info.getMapBorderBottom()),
+        shape.rect(scale * (-3 + (float) info.getMapBorderLeft()),
+                scale * (-3 + (float) info.getMapBorderBottom()),
                 scale * 3, scale * 9);
-        shape.rect(scale * (-3 + (float)info.getMapBorderLeft()),
-                scale * (-3 + (float)info.getMapBorderBottom()),
+        shape.rect(scale * (-3 + (float) info.getMapBorderLeft()),
+                scale * (-3 + (float) info.getMapBorderBottom()),
                 scale * 9, scale * 3);
-        shape.rect(scale * (float)info.getMapBorderRight(),
-                scale * (-3 + (float)info.getMapBorderBottom()),
+        shape.rect(scale * (float) info.getMapBorderRight(),
+                scale * (-3 + (float) info.getMapBorderBottom()),
                 scale * 3, scale * 9);
-        shape.rect(scale * (-3 + (float)info.getMapBorderLeft()),
-                scale * (float)info.getMapBorderTop(),
+        shape.rect(scale * (-3 + (float) info.getMapBorderLeft()),
+                scale * (float) info.getMapBorderTop(),
                 scale * 9, scale * 3);
         shape.setColor(0.16f, 0.66f, 0.16f, 1);
-        shape.rectLine(scale * (float)info.getMapBorderLeft(),
-                scale * (float)info.getMapBorderBottom(),
-                scale * (float)info.getMapBorderLeft(),
-                scale * (float)info.getMapBorderTop(), 3f);
-        shape.rectLine(scale * (float)info.getMapBorderLeft(),
-                scale * (float)info.getMapBorderBottom(),
-                scale * (float)info.getMapBorderRight(),
-                scale * (float)info.getMapBorderBottom(), 3f);
-        shape.rectLine(scale * (float)info.getMapBorderRight(),
-                scale * (float)info.getMapBorderBottom(),
-                scale * (float)info.getMapBorderRight(),
-                scale * (float)info.getMapBorderTop(), 3f);
-        shape.rectLine(scale * (float)info.getMapBorderLeft(),
-                scale * (float)info.getMapBorderTop(),
-                scale * (float)info.getMapBorderRight(),
-                scale * (float)info.getMapBorderTop(), 3f);
+        shape.rectLine(scale * (float) info.getMapBorderLeft(),
+                scale * (float) info.getMapBorderBottom(),
+                scale * (float) info.getMapBorderLeft(),
+                scale * (float) info.getMapBorderTop(), 3f);
+        shape.rectLine(scale * (float) info.getMapBorderLeft(),
+                scale * (float) info.getMapBorderBottom(),
+                scale * (float) info.getMapBorderRight(),
+                scale * (float) info.getMapBorderBottom(), 3f);
+        shape.rectLine(scale * (float) info.getMapBorderRight(),
+                scale * (float) info.getMapBorderBottom(),
+                scale * (float) info.getMapBorderRight(),
+                scale * (float) info.getMapBorderTop(), 3f);
+        shape.rectLine(scale * (float) info.getMapBorderLeft(),
+                scale * (float) info.getMapBorderTop(),
+                scale * (float) info.getMapBorderRight(),
+                scale * (float) info.getMapBorderTop(), 3f);
     }
 
     public void switchPoints() {
