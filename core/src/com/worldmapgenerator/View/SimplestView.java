@@ -103,6 +103,23 @@ public class SimplestView {
         shape.rect(scale * (-3 + (float)info.getMapBorderLeft()),
                 scale * (float)info.getMapBorderTop(),
                 scale * 9, scale * 3);
+        shape.setColor(0.16f, 0.66f, 0.16f, 1);
+        shape.rectLine(scale * (float)info.getMapBorderLeft(),
+                scale * (float)info.getMapBorderBottom(),
+                scale * (float)info.getMapBorderLeft(),
+                scale * (float)info.getMapBorderTop(), 3f);
+        shape.rectLine(scale * (float)info.getMapBorderLeft(),
+                scale * (float)info.getMapBorderBottom(),
+                scale * (float)info.getMapBorderRight(),
+                scale * (float)info.getMapBorderBottom(), 3f);
+        shape.rectLine(scale * (float)info.getMapBorderRight(),
+                scale * (float)info.getMapBorderBottom(),
+                scale * (float)info.getMapBorderRight(),
+                scale * (float)info.getMapBorderTop(), 3f);
+        shape.rectLine(scale * (float)info.getMapBorderLeft(),
+                scale * (float)info.getMapBorderTop(),
+                scale * (float)info.getMapBorderRight(),
+                scale * (float)info.getMapBorderTop(), 3f);
     }
 
     public void switchPoints() {
