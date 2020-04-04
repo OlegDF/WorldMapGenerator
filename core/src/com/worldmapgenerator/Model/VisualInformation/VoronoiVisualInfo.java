@@ -8,9 +8,9 @@ import java.util.*;
 
 public class VoronoiVisualInfo implements GenericVisualInfo {
 
-    private final Set<String> pointsDescription;
-    private final Set<String> connectionsDescription;
-    private final Set<String> polygonsDescription;
+    private final Set<Float[]> pointsDescription;
+    private final Set<Float[]> connectionsDescription;
+    private final Set<Float[]> polygonsDescription;
 
     private final Border border;
 
@@ -24,15 +24,17 @@ public class VoronoiVisualInfo implements GenericVisualInfo {
         connectionsDescription = new HashSet<>();
         polygonsDescription = new HashSet<>();
         for (final DiagramPoint point : points) {
-            pointsDescription.add(point.getX() + ";" + point.getY());
+            Float[] newPoint = {(float)point.getX(), (float)point.getY()};
+            pointsDescription.add(newPoint);
             for (final DiagramPoint neighbour : point.getNeighbourPoints()) {
                 if (point.compareTo(neighbour) < 0) {
-                    connectionsDescription.add(point.getX() + ";" + point.getY() + ";" + neighbour.getX() + ";" + neighbour.getY());
+                    Float[] newConnection = {(float)point.getX(), (float)point.getY(), (float)neighbour.getX(), (float)neighbour.getY()};
+                    connectionsDescription.add(newConnection);
                 } else {
-                    connectionsDescription.add(neighbour.getX() + ";" + neighbour.getY() + ";" + point.getX() + ";" + point.getY());
+                    Float[] newConnection = {(float)neighbour.getX(), (float)neighbour.getY(), (float)point.getX(), (float)point.getY()};
+                    connectionsDescription.add(newConnection);
                 }
             }
-            final StringBuilder polygon = new StringBuilder();
             final List<DiagramCorner> corners = new ArrayList<>(point.getNeighbourCorners());
             Collections.sort(corners, new Comparator<DiagramCorner>() {
                 @Override
@@ -40,10 +42,12 @@ public class VoronoiVisualInfo implements GenericVisualInfo {
                     return Double.compare(o1.convertedAngle(point), o2.convertedAngle(point));
                 }
             });
-            for (final DiagramCorner corner : corners) {
-                polygon.append(corner.getX()).append(";").append(corner.getY()).append(";");
+            Float[] polygon = new Float[corners.size() * 2];
+            for (int i = 0; i < corners.size(); i++) {
+                polygon[i * 2] = (float)corners.get(i).getX();
+                polygon[i * 2 + 1] = (float)corners.get(i).getY();
             }
-            polygonsDescription.add(polygon.toString());
+            polygonsDescription.add(polygon);
         }
         this.border = border;
     }
@@ -51,21 +55,21 @@ public class VoronoiVisualInfo implements GenericVisualInfo {
     /**
      * @return описания вершин диаграммы в форме "x;y"
      */
-    public Set<String> getPointsDescription() {
+    public Set<Float[]> getPointsDescription() {
         return pointsDescription;
     }
 
     /**
      * @return описания ребер диаграммы в форме "x1;y1;x2;y2"
      */
-    public Set<String> getConnectionsDescription() {
+    public Set<Float[]> getConnectionsDescription() {
         return connectionsDescription;
     }
 
     /**
      * @return описания многоугольников диаграммы в форме "x1;y1;x2;y2;..."
      */
-    public Set<String> getPolygonsDescription() {
+    public Set<Float[]> getPolygonsDescription() {
         return polygonsDescription;
     }
 

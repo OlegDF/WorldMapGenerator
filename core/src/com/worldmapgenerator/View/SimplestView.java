@@ -6,17 +6,22 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.worldmapgenerator.Model.VisualInformation.GenericVisualInfo;
 
-public class SimplestView {
+public class SimplestView implements GraphicalView {
 
     private OrthographicCamera camera;
     private final ShapeRenderer shape;
+    
+    private final CameraParameters cameraParameters;
 
     private boolean pointRenderEnabled = true;
     private boolean connectionsRenderEnabled = true;
     private boolean polygonsRenderEnabled = true;
 
+    private final float scrollSpeed = 200;
+
     public SimplestView() {
         shape = new ShapeRenderer();
+        cameraParameters = new CameraParameters();
     }
 
     /**
@@ -25,10 +30,8 @@ public class SimplestView {
      * @param info - данные, принятые от модели
      */
     public void render(final GenericVisualInfo info) {
-        final int windowWidth = Gdx.graphics.getWidth();
-        final int windowHeight = Gdx.graphics.getHeight();
-        final int scale = Math.min(windowWidth, windowHeight);
-        createCamera(info, windowWidth, windowHeight, scale);
+        final float scale = getScale();
+        createCamera(info, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), scale);
         shape.setProjectionMatrix(camera.combined);
         shape.begin(ShapeRenderer.ShapeType.Filled);
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -46,64 +49,61 @@ public class SimplestView {
         shape.end();
     }
 
-    private void createCamera(final GenericVisualInfo info, final int windowWidth, final int windowHeight, final int scale) {
+    private void createCamera(final GenericVisualInfo info, final int windowWidth, final int windowHeight, final float scale) {
         camera = new OrthographicCamera(windowWidth, windowHeight);
-        camera.translate(scale / 2f * (float) (info.getMapBorderRight() - info.getMapBorderLeft()) +
-                        scale * (float) info.getMapBorderLeft(),
-                scale / 2f * (float) (info.getMapBorderTop() - info.getMapBorderBottom()) +
-                        scale * (float) info.getMapBorderBottom());
+        camera.translate(scale * ((float) (info.getMapBorderRight() - info.getMapBorderLeft()) * (0.5f + cameraParameters.getOffsetX()) +
+                        (float) info.getMapBorderLeft()),
+                scale * ((float) (info.getMapBorderTop() - info.getMapBorderBottom()) * (0.5f + cameraParameters.getOffsetY()) +
+                        (float) info.getMapBorderBottom()));
         camera.update();
     }
 
-    private void renderPolygons(final GenericVisualInfo info, final int scale) {
-        for (final String polygonDescription : info.getPolygonsDescription()) {
-            final String[] decypheredDescription = polygonDescription.split(";");
-            final int l = (decypheredDescription.length / 2) * 2;
+    private void renderPolygons(final GenericVisualInfo info, final float scale) {
+        for (final Float[] polygonDescription : info.getPolygonsDescription()) {
+            final int l = (polygonDescription.length / 2) * 2;
             shape.setColor(0.16f, 0.66f, 0.16f, 1);
             for (int i = 0; i < l; i += 2) {
-                shape.rectLine(Float.parseFloat(decypheredDescription[i % l]) * scale,
-                        Float.parseFloat(decypheredDescription[(i + 1) % l]) * scale,
-                        Float.parseFloat(decypheredDescription[(i + 2) % l]) * scale,
-                        Float.parseFloat(decypheredDescription[(i + 3) % l]) * scale, 3f);
+                shape.rectLine(polygonDescription[i % l] * scale,
+                        polygonDescription[(i + 1) % l] * scale,
+                        polygonDescription[(i + 2) % l] * scale,
+                        polygonDescription[(i + 3) % l] * scale, 3f);
             }
         }
     }
 
-    private void renderConnections(final GenericVisualInfo info, final int scale) {
-        for (final String connectionDescription : info.getConnectionsDescription()) {
-            final String[] decypheredDescription = connectionDescription.split(";");
+    private void renderConnections(final GenericVisualInfo info, final float scale) {
+        for (final Float[] connectionDescription : info.getConnectionsDescription()) {
             shape.setColor(0, 0.33f, 0.66f, 1);
-            shape.rectLine(Float.parseFloat(decypheredDescription[0]) * scale,
-                    Float.parseFloat(decypheredDescription[1]) * scale,
-                    Float.parseFloat(decypheredDescription[2]) * scale,
-                    Float.parseFloat(decypheredDescription[3]) * scale, 3f);
+            shape.rectLine(connectionDescription[0] * scale,
+                    connectionDescription[1] * scale,
+                    connectionDescription[2] * scale,
+                    connectionDescription[3] * scale, 3f);
         }
     }
 
-    private void renderPoints(final GenericVisualInfo info, final int scale) {
-        for (final String pointDescription : info.getPointsDescription()) {
-            final String[] decypheredDescription = pointDescription.split(";");
+    private void renderPoints(final GenericVisualInfo info, final float scale) {
+        for (final Float[] pointDescription : info.getPointsDescription()) {
             shape.setColor(0.66f, 0, 0.33f, 1);
-            shape.circle(Float.parseFloat(decypheredDescription[0]) * scale,
-                    Float.parseFloat(decypheredDescription[1]) * scale,
+            shape.circle(pointDescription[0] * scale,
+                    pointDescription[1] * scale,
                     5f);
         }
     }
 
-    private void renderBorders(final GenericVisualInfo info, final int scale) {
+    private void renderBorders(final GenericVisualInfo info, final float scale) {
         shape.setColor(0, 0, 0, 1);
-        shape.rect(scale * (-3 + (float) info.getMapBorderLeft()),
-                scale * (-3 + (float) info.getMapBorderBottom()),
-                scale * 3, scale * 9);
-        shape.rect(scale * (-3 + (float) info.getMapBorderLeft()),
-                scale * (-3 + (float) info.getMapBorderBottom()),
-                scale * 9, scale * 3);
+        shape.rect(scale * (-30 + (float) info.getMapBorderLeft()),
+                scale * (-30 + (float) info.getMapBorderBottom()),
+                scale * 30, scale * 90);
+        shape.rect(scale * (-30 + (float) info.getMapBorderLeft()),
+                scale * (-30 + (float) info.getMapBorderBottom()),
+                scale * 90, scale * 30);
         shape.rect(scale * (float) info.getMapBorderRight(),
-                scale * (-3 + (float) info.getMapBorderBottom()),
-                scale * 3, scale * 9);
-        shape.rect(scale * (-3 + (float) info.getMapBorderLeft()),
+                scale * (-30 + (float) info.getMapBorderBottom()),
+                scale * 30, scale * 90);
+        shape.rect(scale * (-30 + (float) info.getMapBorderLeft()),
                 scale * (float) info.getMapBorderTop(),
-                scale * 9, scale * 3);
+                scale * 90, scale * 30);
         shape.setColor(0.16f, 0.66f, 0.16f, 1);
         shape.rectLine(scale * (float) info.getMapBorderLeft(),
                 scale * (float) info.getMapBorderBottom(),
@@ -123,6 +123,10 @@ public class SimplestView {
                 scale * (float) info.getMapBorderTop(), 3f);
     }
 
+    private float getScale() {
+        return Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) * cameraParameters.getCurrentScale();
+    }
+
     public void switchPoints() {
         pointRenderEnabled = !pointRenderEnabled;
     }
@@ -133,6 +137,30 @@ public class SimplestView {
 
     public void switchPolygons() {
         polygonsRenderEnabled = !polygonsRenderEnabled;
+    }
+
+    public void decreaseScale() {
+        cameraParameters.decreaseScale();
+    }
+
+    public void increaseScale() {
+        cameraParameters.increaseScale();
+    }
+
+    public void moveLeft() {
+        cameraParameters.moveLeft(Gdx.graphics.getDeltaTime() * scrollSpeed / getScale());
+    }
+
+    public void moveRight() {
+        cameraParameters.moveRight(Gdx.graphics.getDeltaTime() * scrollSpeed / getScale());
+    }
+
+    public void moveDown() {
+        cameraParameters.moveDown(Gdx.graphics.getDeltaTime() * scrollSpeed / getScale());
+    }
+
+    public void moveUp() {
+        cameraParameters.moveUp(Gdx.graphics.getDeltaTime() * scrollSpeed / getScale());
     }
 
 }

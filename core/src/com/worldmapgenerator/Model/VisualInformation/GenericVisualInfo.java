@@ -8,19 +8,19 @@ public interface GenericVisualInfo {
      * @return набор строк, соответствующих каждой вершине графа карты.
      * Формат: (x вершины);(y вершины)
      */
-    Set<String> getPointsDescription();
+    Set<Float[]> getPointsDescription();
 
     /**
      * @return набор строк, соответствующих каждому ребру графа карты.
      * Формат: (x первой вершины);(y первой вершины);(x второй вершины);(y второй вершины)
      */
-    Set<String> getConnectionsDescription();
+    Set<Float[]> getConnectionsDescription();
 
     /**
      * @return набор строк, соответствующих каждому ребру графа карты.
      * Формат: (x первой вершины);(y первой вершины);(x второй вершины);(y второй вершины)
      */
-    Set<String> getPolygonsDescription();
+    Set<Float[]> getPolygonsDescription();
 
     double getMapBorderLeft();
 
