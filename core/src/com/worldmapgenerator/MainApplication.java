@@ -11,7 +11,7 @@ public class MainApplication extends ApplicationAdapter {
 
     @Override
     public void create() {
-        controller = GraphicalVoronoiController.simplestVoronoiController();
+        controller = GraphicalVoronoiController.tiledVoronoiController();
     }
 
     @Override

@@ -66,7 +66,7 @@ public class VoronoiDiagram {
                 final DiagramCorner corner2 = corners.get((i + 1) % corners.size());
                 DiagramPoint point2 = null;
                 for (final DiagramPoint neighbour : corner1.getNeighbourPoints()) {
-                    if (corner2.getNeighbourPoints().contains(neighbour)) {
+                    if (corner2.getNeighbourPoints().contains(neighbour) && !point.equals(neighbour)) {
                         point2 = neighbour;
                     }
                 }

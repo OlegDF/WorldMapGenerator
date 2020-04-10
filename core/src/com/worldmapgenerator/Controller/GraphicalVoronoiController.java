@@ -7,6 +7,7 @@ import com.worldmapgenerator.Model.ControllerInterface.VoronoiMapController;
 import com.worldmapgenerator.Model.VoronoiMapModel;
 import com.worldmapgenerator.View.GraphicalView;
 import com.worldmapgenerator.View.SimplestView;
+import com.worldmapgenerator.View.TiledView;
 
 public class GraphicalVoronoiController implements GenericController, GraphicalController, VoronoiMapController {
 
@@ -22,6 +23,10 @@ public class GraphicalVoronoiController implements GenericController, GraphicalC
 
     public static GraphicalVoronoiController simplestVoronoiController() {
         return new GraphicalVoronoiController(new SimplestView());
+    }
+
+    public static GraphicalVoronoiController tiledVoronoiController() {
+        return new GraphicalVoronoiController(new TiledView());
     }
 
     public void drawMap() {
@@ -43,15 +48,6 @@ public class GraphicalVoronoiController implements GenericController, GraphicalC
                 break;
             case RELAX_MAP:
                 model.relaxMap();
-                break;
-            case HIDE_POINTS:
-                view.switchPoints();
-                break;
-            case HIDE_CONNECTIONS:
-                view.switchConnections();
-                break;
-            case HIDE_POLYGONS:
-                view.switchPolygons();
                 break;
             case MOVE_LEFT:
                 view.moveLeft();

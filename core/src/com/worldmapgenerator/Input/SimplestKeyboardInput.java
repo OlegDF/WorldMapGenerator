@@ -14,16 +14,6 @@ public class SimplestKeyboardInput implements GenericInput {
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             controller.receiveCommand(CommandType.GENERATE_NEW_MAP);
         }
-        //показать/спрятать элементы
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
-            controller.receiveCommand(CommandType.HIDE_POINTS);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            controller.receiveCommand(CommandType.HIDE_CONNECTIONS);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            controller.receiveCommand(CommandType.HIDE_POLYGONS);
-        }
         //движение карты
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             controller.receiveCommand(CommandType.MOVE_LEFT);

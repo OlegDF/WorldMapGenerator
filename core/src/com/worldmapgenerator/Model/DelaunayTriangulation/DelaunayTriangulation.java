@@ -95,7 +95,7 @@ public class DelaunayTriangulation {
         supertrianglePoint2 = new DiagramPoint(border.borderLeft + (border.borderRight - border.borderLeft) / 2,
                 border.borderTop + (border.borderTop - border.borderBottom) * 2);
         supertrianglePoint3 = new DiagramPoint(border.borderLeft + (border.borderRight - border.borderLeft) * 2,
-                border.borderBottom - (border.borderTop - border.borderBottom));
+                border.borderBottom - (border.borderTop - border.borderBottom) * 1.001);
         triangles.add(new Triangle(supertrianglePoint1, supertrianglePoint2, supertrianglePoint3));
         for (final DiagramPoint point : points) {
             addPointToTriangulation(triangles, point);

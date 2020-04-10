@@ -5,22 +5,15 @@ import java.util.Set;
 public interface GenericVisualInfo {
 
     /**
-     * @return набор строк, соответствующих каждой вершине графа карты.
-     * Формат: (x вершины);(y вершины)
+     * @return набор объектов, содержащих информацию о каждой вершине и типе местности.
      */
-    Set<Float[]> getPointsDescription();
+    Set<AreaInfo> getAreasDescription();
 
     /**
-     * @return набор строк, соответствующих каждому ребру графа карты.
+     * @return набор массивов чисел, соответствующих каждому ребру графа карты.
      * Формат: (x первой вершины);(y первой вершины);(x второй вершины);(y второй вершины)
      */
     Set<Float[]> getConnectionsDescription();
-
-    /**
-     * @return набор строк, соответствующих каждому ребру графа карты.
-     * Формат: (x первой вершины);(y первой вершины);(x второй вершины);(y второй вершины)
-     */
-    Set<Float[]> getPolygonsDescription();
 
     double getMapBorderLeft();
 

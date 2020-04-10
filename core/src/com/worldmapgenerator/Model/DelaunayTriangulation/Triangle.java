@@ -1,5 +1,6 @@
 package com.worldmapgenerator.Model.DelaunayTriangulation;
 
+import com.worldmapgenerator.Model.DiagramStructure.Border;
 import com.worldmapgenerator.Model.DiagramStructure.DiagramCorner;
 import com.worldmapgenerator.Model.DiagramStructure.DiagramPoint;
 
@@ -50,7 +51,7 @@ class Triangle {
     }
 
     void createCircumcenter(final DiagramPoint supertrianglePoint1, final DiagramPoint supertrianglePoint2,
-                            final DiagramPoint supertrianglePoint3) {
+                                 final DiagramPoint supertrianglePoint3) {
         final double mid12x = (p1.getX() + p2.getX()) / 2;
         final double mid12y = (p1.getY() + p2.getY()) / 2;
         final double mid23x = (p2.getX() + p3.getX()) / 2;
